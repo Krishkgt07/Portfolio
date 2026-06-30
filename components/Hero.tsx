@@ -151,15 +151,15 @@ export default function Hero() {
             className="flex flex-wrap items-center gap-4 pt-2"
           >
             <a
-              href="#projects"
+              href="#contact"
               onClick={(e) => {
                 e.preventDefault();
-                document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" });
+                document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
               }}
               className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-primary/20 hover:scale-[1.02]"
-              id="hero-btn-projects"
+              id="hero-btn-contact"
             >
-              View Projects <ArrowRight className="w-4 h-4" />
+              Contact Me <ArrowRight className="w-4 h-4" />
             </a>
             
             <a

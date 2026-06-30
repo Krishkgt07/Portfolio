@@ -6,7 +6,6 @@ import Hero from "@/components/Hero";
 const About = dynamic(() => import("@/components/About"), { ssr: true });
 const Education = dynamic(() => import("@/components/Education"), { ssr: true });
 const Skills = dynamic(() => import("@/components/Skills"), { ssr: true });
-const Projects = dynamic(() => import("@/components/Projects"), { ssr: true });
 const Certifications = dynamic(() => import("@/components/Certifications"), { ssr: true });
 const Achievements = dynamic(() => import("@/components/Achievements"), { ssr: true });
 const Contact = dynamic(() => import("@/components/Contact"), { ssr: true });
@@ -21,7 +20,6 @@ export default function Home() {
         <About />
         <Education />
         <Skills />
-        <Projects />
         <Certifications />
         <Achievements />
         <Contact />
