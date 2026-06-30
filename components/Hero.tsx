@@ -7,8 +7,6 @@ import { Github, Linkedin } from "@/components/BrandIcons";
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
   // Mouse parallax springs
   const rotateX = useSpring(0, { stiffness: 100, damping: 25 });
   const rotateY = useSpring(0, { stiffness: 100, damping: 25 });
@@ -27,8 +25,6 @@ export default function Hero() {
       // Get coordinates relative to center of the viewport (-0.5 to 0.5)
       const x = (e.clientX / innerWidth) - 0.5;
       const y = (e.clientY / innerHeight) - 0.5;
-      
-      setMousePosition({ x, y });
       
       // Calculate rotation degrees (max 15 deg) and translations (max 20px)
       rotateX.set(-y * 15);

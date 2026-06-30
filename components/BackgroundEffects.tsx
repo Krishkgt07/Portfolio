@@ -73,9 +73,10 @@ export default function BackgroundEffects() {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+          const distSq = dx * dx + dy * dy;
 
-          if (dist < 100) {
+          if (distSq < 10000) {
+            const dist = Math.sqrt(distSq);
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
@@ -130,7 +131,7 @@ export default function BackgroundEffects() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute -top-[10%] left-[20%] h-[350px] w-[350px] rounded-full bg-[#8B5CF6]/8 filter blur-[120px]"
+        className="absolute -top-[10%] left-[20%] h-[350px] w-[350px] rounded-full bg-[#8B5CF6]/8 filter blur-[120px] will-change-transform"
       />
 
       {/* Blue Glowing Blob */}
@@ -144,7 +145,7 @@ export default function BackgroundEffects() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute top-[40%] -right-[10%] h-[400px] w-[400px] rounded-full bg-[#3B82F6]/6 filter blur-[130px]"
+        className="absolute top-[40%] -right-[10%] h-[400px] w-[400px] rounded-full bg-[#3B82F6]/6 filter blur-[130px] will-change-transform"
       />
 
       {/* Cyan Glowing Blob */}
@@ -158,7 +159,7 @@ export default function BackgroundEffects() {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute -bottom-[10%] left-[10%] h-[350px] w-[350px] rounded-full bg-[#06B6D4]/8 filter blur-[120px]"
+        className="absolute -bottom-[10%] left-[10%] h-[350px] w-[350px] rounded-full bg-[#06B6D4]/8 filter blur-[120px] will-change-transform"
       />
     </div>
   );
