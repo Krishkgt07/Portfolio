@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Phone, Mail, Send, CheckCircle, AlertTriangle } from "lucide-react";
 import { Github, Linkedin } from "@/components/BrandIcons";
@@ -8,6 +8,25 @@ import emailjs from "@emailjs/browser";
 
 export default function Contact() {
   const formRef = useRef<HTMLFormElement>(null);
+  const [mapVisible, setMapVisible] = useState(false);
+  const mapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setMapVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    if (mapRef.current) {
+      observer.observe(mapRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<"success" | "error" | null>(null);
   const [formData, setFormData] = useState({
@@ -138,20 +157,24 @@ export default function Contact() {
             </div>
 
             {/* Styled Dark Google Map Container */}
-            <div className="glass-panel h-[280px] rounded-2xl overflow-hidden relative border border-white/5 shadow-inner">
-              <iframe
-                title="Indore location map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117763.55663738096!2d75.79380993510972!3d22.7239116773229!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962fcad1b4d0c3b%3A0x7a6aeab057a4dbd1!2sIndore%2C%20Madhya%20Pradesh!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
-                width="100%"
-                height="100%"
-                style={{
-                  border: 0,
-                  filter: "invert(92%) hue-rotate(185deg) grayscale(40%) contrast(115%) opacity(0.7)",
-                }}
-                allowFullScreen={false}
-                loading="lazy"
-                id="contact-location-map"
-              />
+            <div ref={mapRef} className="glass-panel h-[280px] rounded-2xl overflow-hidden relative border border-white/5 shadow-inner bg-black/20 flex items-center justify-center">
+              {mapVisible ? (
+                <iframe
+                  title="Indore location map"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d117763.55663738096!2d75.79380993510972!3d22.7239116773229!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3962fcad1b4d0c3b%3A0x7a6aeab057a4dbd1!2sIndore%2C%20Madhya%20Pradesh!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                  width="100%"
+                  height="100%"
+                  style={{
+                    border: 0,
+                    filter: "invert(92%) hue-rotate(185deg) grayscale(40%) contrast(115%) opacity(0.7)",
+                  }}
+                  allowFullScreen={false}
+                  loading="lazy"
+                  id="contact-location-map"
+                />
+              ) : (
+                <div className="text-white/20 text-[10px] tracking-[0.2em] font-mono animate-pulse uppercase">Initializing map core...</div>
+              )}
               {/* Dark Gradient Overlay to match BG */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/40 via-transparent to-transparent pointer-events-none" />
             </div>

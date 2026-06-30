@@ -67,8 +67,10 @@ export default function About() {
               {/* Profile Image (Yuvraj's photo) */}
               <div className="relative w-full h-full rounded-2xl overflow-hidden z-10 flex items-center justify-center bg-black/40">
                 <img
-                  src="/yuvraj.jpg"
+                  src="/yuvraj.webp"
                   alt="Yuvraj Singh Jadav"
+                  width={400}
+                  height={400}
                   className="w-full h-full object-cover grayscale contrast-[1.05] group-hover:grayscale-0 group-hover:contrast-100 transition-all duration-700 ease-out"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/60 via-transparent to-transparent opacity-60 pointer-events-none" />

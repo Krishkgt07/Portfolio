@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Poppins } from "next/font/google";
 import "./globals.css";
-import CustomCursor from "@/components/CustomCursor";
 import BackgroundEffects from "@/components/BackgroundEffects";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-space-grotesk",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "600"],
+  display: "swap",
 });
 
 const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  weight: ["400", "600"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -38,8 +39,6 @@ export const metadata: Metadata = {
   },
 };
 
-import LoadingScreen from "@/components/LoadingScreen";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -53,13 +52,10 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${poppins.variable} font-sans bg-[#050505] text-[#ededed] antialiased selection:bg-primary/30 selection:text-white overflow-x-hidden`}
       >
-        <LoadingScreen>
-          <BackgroundEffects />
-          <CustomCursor />
-          <div className="relative z-10 flex min-h-screen flex-col">
-            {children}
-          </div>
-        </LoadingScreen>
+        <BackgroundEffects />
+        <div className="relative z-10 flex min-h-screen flex-col">
+          {children}
+        </div>
       </body>
     </html>
   );

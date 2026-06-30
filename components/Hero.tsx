@@ -4,12 +4,10 @@ import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Mail, ArrowRight, Download } from "lucide-react";
 import { Github, Linkedin } from "@/components/BrandIcons";
-import Spline from "@splinetool/react-spline";
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [iframeLoaded, setIframeLoaded] = useState(false);
 
   // Mouse parallax springs
   const rotateX = useSpring(0, { stiffness: 100, damping: 25 });
@@ -232,23 +230,8 @@ export default function Hero() {
         >
           <div className="absolute inset-0 z-0 bg-radial-gradient from-secondary/10 to-transparent blur-[80px]" />
           <div className="w-full h-full relative z-10 rounded-2xl overflow-hidden border border-white/5 shadow-2xl">
-            {/* Loading Indicator */}
-            {!iframeLoaded && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#050505] z-20">
-                <div className="space-y-4 text-center font-display">
-                  <div className="mx-auto h-12 w-12 animate-spin rounded-full border-2 border-t-transparent border-secondary" />
-                  <span className="text-xs text-white/40 tracking-wider">COMPILING 3D WORLD...</span>
-                </div>
-              </div>
-            )}
-            {/* Render the official community Spline scene preview URL inside an iframe */}
-            <iframe
-              src="https://app.spline.design/file/415a000d-0196-4af3-8afd-5ba868b07aa7?view=preview"
-              className="w-full h-full border-0 bg-transparent"
-              title="Yuvraj 3D Spline Centerpiece"
-              loading="lazy"
-              onLoad={() => setIframeLoaded(true)}
-            />
+            {/* Render the local high-performance Neural-Radar Canvas centerpiece (0 dependencies) */}
+            <NeuralRadarCanvas />
           </div>
         </motion.div>
       </div>
@@ -274,4 +257,174 @@ export default function Hero() {
       </div>
     </section>
   );
+}
+
+function NeuralRadarCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let width = (canvas.width = 400);
+    let height = (canvas.height = 400);
+
+    // Node particle class
+    class Node {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      radius: number;
+      pulseSpeed: number;
+      pulseTime: number;
+
+      constructor() {
+        const angle = Math.random() * Math.PI * 2;
+        const radius = Math.random() * 150;
+        this.x = 200 + Math.cos(angle) * radius;
+        this.y = 200 + Math.sin(angle) * radius;
+        this.vx = (Math.random() - 0.5) * 0.4;
+        this.vy = (Math.random() - 0.5) * 0.4;
+        this.radius = Math.random() * 2 + 1;
+        this.pulseSpeed = Math.random() * 0.05 + 0.02;
+        this.pulseTime = Math.random() * Math.PI;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        const dx = this.x - 200;
+        const dy = this.y - 200;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > 180) {
+          const angle = Math.atan2(dy, dx);
+          this.x = 200 + Math.cos(angle) * 180;
+          this.y = 200 + Math.sin(angle) * 180;
+          this.vx = -this.vx;
+          this.vy = -this.vy;
+        }
+
+        this.pulseTime += this.pulseSpeed;
+      }
+
+      draw() {
+        if (!ctx) return;
+        const alpha = 0.3 + Math.sin(this.pulseTime) * 0.2;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(6, 182, 212, ${alpha})`;
+        ctx.fill();
+        
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#06b6d4";
+        ctx.fillStyle = `rgba(59, 130, 246, ${alpha * 0.5})`;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    const nodeCount = 35;
+    const nodes: Node[] = [];
+    for (let i = 0; i < nodeCount; i++) {
+      nodes.push(new Node());
+    }
+
+    let radarAngle = 0;
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.03)";
+      ctx.lineWidth = 1;
+      
+      ctx.beginPath();
+      ctx.arc(200, 200, 180, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(200, 200, 120, 0, Math.PI * 2);
+      ctx.setLineDash([5, 15]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.beginPath();
+      ctx.arc(200, 200, 50, 0, Math.PI * 2);
+      ctx.strokeStyle = "rgba(6, 182, 212, 0.05)";
+      ctx.stroke();
+
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.02)";
+      ctx.beginPath();
+      ctx.moveTo(200, 10);
+      ctx.lineTo(200, 390);
+      ctx.moveTo(10, 200);
+      ctx.lineTo(390, 200);
+      ctx.stroke();
+
+      ctx.strokeStyle = "rgba(6, 182, 212, 0.08)";
+      ctx.lineWidth = 0.5;
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 80) {
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      nodes.forEach((n) => {
+        n.update();
+        n.draw();
+      });
+
+      radarAngle += 0.01;
+      const rx = 200 + Math.cos(radarAngle) * 180;
+      const ry = 200 + Math.sin(radarAngle) * 180;
+
+      const grad = ctx.createRadialGradient(200, 200, 0, 200, 200, 180);
+      grad.addColorStop(0, "rgba(6, 182, 212, 0)");
+      grad.addColorStop(1, "rgba(6, 182, 212, 0.05)");
+
+      ctx.beginPath();
+      ctx.moveTo(200, 200);
+      ctx.arc(200, 200, 180, radarAngle - 0.2, radarAngle);
+      ctx.lineTo(200, 200);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(200, 200);
+      ctx.lineTo(rx, ry);
+      ctx.strokeStyle = "rgba(6, 182, 212, 0.2)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      animId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    const handleResize = () => {
+      const rect = canvas.getBoundingClientRect();
+      width = canvas.width = rect.width;
+      height = canvas.height = rect.height;
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="w-full h-full block bg-transparent" />;
 }
