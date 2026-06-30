@@ -37,6 +37,11 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Yuvraj Singh Jadav | AI & ML Engineering Portfolio",
+    description: "Portfolio of Yuvraj Singh Jadav, a Computer Science Engineering student specializing in AI/ML.",
+  },
 };
 
 export default function RootLayout({
@@ -53,6 +58,25 @@ export default function RootLayout({
         className={`${spaceGrotesk.variable} ${poppins.variable} font-sans bg-[#050505] text-[#ededed] antialiased selection:bg-primary/30 selection:text-white overflow-x-hidden`}
       >
         <BackgroundEffects />
+        {/* Structured Schema JSON-LD (SEO Best Practices) */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              "name": "Yuvraj Singh Jadav",
+              "email": "yuvrajsinghyadav994@gmail.com",
+              "jobTitle": "Artificial Intelligence & Machine Learning Student / Software Developer",
+              "alumniOf": "Acropolis Institute of Technology and Research",
+              "url": "https://portpholio-sooty.vercel.app",
+              "sameAs": [
+                "https://github.com/Krishkgt07",
+                "https://www.linkedin.com/in/yuvraj-singh-jadav-29052038a"
+              ]
+            })
+          }}
+        />
         <div className="relative z-10 flex min-h-screen flex-col">
           {children}
         </div>
